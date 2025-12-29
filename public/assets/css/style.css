@@ -1,0 +1,23 @@
+/* */
+:root {
+  --primary: #0f172a;       /* Dark Navy/Teal */
+  --accent: #f59e0b;        /* Amber for buttons/alerts */
+  --primary-light: #f1f5f9;
+  --sidebar-bg: #1e293b;    /* Dark Sidebar */
+  --sidebar-hover: #334155;
+  --text-dark: #0f172a;
+  --text-light: #64748b;
+  --border: #e2e8f0;
+  --background: #f8fafc;
+  --card-bg: #ffffff;
+}
+
+/* Animations */
+@keyframes scaleFade {
+    from { opacity: 0; transform: scale(.96); }
+    to { opacity: 1; transform: scale(1); }
+}
+
+.animate-scaleFade {
+    animation: scaleFade 180ms ease-out;
+}
