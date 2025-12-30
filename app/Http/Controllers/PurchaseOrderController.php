@@ -101,12 +101,10 @@ class PurchaseOrderController extends Controller
             'total_amount'  => $request->total_amount,
         ]);
 
-        // 2. Purane items aur unke variants delete karne se pehle 
-        // Optional: Yahan stock reversal ka logic lag sakta hai agar status 'Completed' tha.
+        
         $po->items()->delete(); 
 
         foreach ($request->products as $productData) {
-            // Medicine create ya update karein
             $medicine = Medicine::updateOrCreate(
                 ['name' => $productData['name']],
                 [
@@ -122,8 +120,6 @@ class PurchaseOrderController extends Controller
             ]);
 
             foreach ($productData['variants'] as $v) {
-                // IMPORTANT: Main Inventory (medicine_variants) table mein update/create karein
-                // Isse naya variant Database mein show hone lagega.
                 $mainVariant = MedicineVariant::updateOrCreate(
                     ['sku' => $v['sku']],
                     [
@@ -134,7 +130,6 @@ class PurchaseOrderController extends Controller
                     ]
                 );
 
-                // Agar status 'Completed' hai to stock barha dein
                 if ($request->status === 'Completed') {
                     $mainVariant->increment('stock_level', $v['stock']);
                 }

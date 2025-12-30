@@ -10,19 +10,14 @@ use Schema;
 
 class SupplierController extends Controller
 {
-    /**
-     * Display a listing of the resource (Initial view load).
-     */
+  
     public function index()
     {
         $suppliers = null; // Initialize to null
 
         try {
-            // Attempt to fetch data
             $suppliers = Supplier::orderBy('supplier_name')->paginate(10);
         } catch (QueryException $e) {
-            // Log the error for debugging.
-            // When $suppliers remains null, the Blade file displays: "Error: Supplier data failed to load."
             \Log::error('Database error loading suppliers on index page: ' . $e->getMessage());
         }
 
@@ -31,7 +26,6 @@ class SupplierController extends Controller
     public function getHistory(Supplier $supplier)
     {
         try {
-            // 1. Fetch Purchases
             $purchases = PurchaseOrder::where('supplier_name', $supplier->supplier_name)
                 ->select('po_number as reference', 'total_amount as amount', DB::raw("'credit' as type"), 'order_date as date')
                 ->get()
@@ -40,7 +34,6 @@ class SupplierController extends Controller
                     return $item;
                 });
 
-            // 2. Fetch Manual Payments (Using optional check for table existence)
             $payments = collect();
             if (Schema::hasTable('supplier_manual_logs')) {
                 $payments = DB::table('supplier_manual_logs')
@@ -68,9 +61,7 @@ class SupplierController extends Controller
         }
     }
 
-    /**
-     * Record a manual Debit (Payment Sent) or Credit (Debt Added).
-     */
+
     public function recordPayment(Request $request, Supplier $supplier)
     {
         $request->validate([
@@ -82,14 +73,11 @@ class SupplierController extends Controller
             DB::beginTransaction();
 
             if ($request->type === 'debit') {
-                // Payment sent: Reduce balance due
                 $supplier->decrement('balance_due', $request->amount);
             } else {
-                // New debt: Increase balance due
                 $supplier->increment('balance_due', $request->amount);
             }
 
-            // Log entry (Ensure 'supplier_manual_logs' table exists)
             DB::table('supplier_manual_logs')->insert([
                 'supplier_id'  => $supplier->id,
                 'reference_no' => 'SPAY-' . strtoupper(uniqid()),
@@ -105,12 +93,9 @@ class SupplierController extends Controller
             return response()->json(['success' => false, 'message' => 'Failed to update ledger.'], 500);
         }
     }
-    /**
-     * Dynamic fetching of suppliers for AJAX/filtering/search.
-     */
+
     public function getSuppliers(Request $request)
     {
-        // ... (query logic remains the same)
         $query = Supplier::orderBy('supplier_name');
 
         if ($search = $request->get('search')) {
@@ -130,7 +115,6 @@ class SupplierController extends Controller
 
         $suppliers = $query->paginate(10);
 
-        // Returns JSON data for JS to render
         return response()->json([
             'data'  => $suppliers->items(),
             'links' => [
@@ -145,12 +129,7 @@ class SupplierController extends Controller
         ]);
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
-  /**
-     * Store a newly created resource.
-     */
+
     public function store(Request $request)
     {
         $validatedData = $request->validate([
@@ -173,9 +152,7 @@ class SupplierController extends Controller
         ], 201);
     }
 
-    /**
-     * Update the specified resource.
-     */
+
     public function update(Request $request, Supplier $supplier)
     {
         $validatedData = $request->validate([
@@ -197,17 +174,13 @@ class SupplierController extends Controller
         ]);
     }
 
-    /**
-     * Show the specified resource for editing (used for AJAX data fetching).
-     */
+
     public function edit(Supplier $supplier)
     {
         return response()->json($supplier);
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
+
     public function destroy(Supplier $supplier)
     {
         $supplierName = $supplier->supplier_name;

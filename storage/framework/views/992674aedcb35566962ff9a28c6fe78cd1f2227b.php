@@ -1,11 +1,11 @@
-@extends('layouts.main')
-@section('title', 'RetailPro | Supplier Network')
 
-@section('content')
+<?php $__env->startSection('title', 'RetailPro | Supplier Network'); ?>
+
+<?php $__env->startSection('content'); ?>
     <main class="overflow-y-auto p-2 sm:p-4 md:p-8 min-h-[calc(100vh-70px)] mt-20 sm:mt-0">
         <div class="max-w-[1600px] mx-auto w-full">
             
-            {{-- Header Section --}}
+            
             <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-8 border-b border-slate-200 pb-6">
                 <div>
                     <h1 class="text-xl sm:text-2xl md:text-3xl font-black text-slate-900 tracking-tighter uppercase italic leading-none">
@@ -24,7 +24,7 @@
             </div>
 
             <div class="bg-white rounded-3xl shadow-xl border border-slate-100 p-4 sm:p-8">
-                {{-- Filters & Search --}}
+                
                 <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-4 mb-8">
                     <div class="relative w-full lg:w-1/3">
                         <i class="fa-solid fa-search absolute left-4 top-1/2 -translate-y-1/2 text-slate-400"></i>
@@ -43,7 +43,7 @@
                     </div>
                 </div>
 
-                {{-- DESKTOP VIEW: Table --}}
+                
                 <div class="hidden md:block overflow-hidden rounded-2xl border border-slate-100 shadow-sm">
                     <table class="w-full border-collapse text-sm">
                         <thead>
@@ -56,24 +56,24 @@
                             </tr>
                         </thead>
                         <tbody id="suppliersTableBody" class="divide-y divide-slate-50 text-slate-800 bg-white">
-                            {{-- Content via JS --}}
+                            
                         </tbody>
                     </table>
                 </div>
 
-                {{-- MOBILE VIEW: Card Layout --}}
+                
                 <div id="suppliersCardContainer" class="md:hidden grid grid-cols-1 gap-4">
-                    {{-- Content via JS --}}
+                    
                 </div>
                 
                 <div id="suppliersPagination" class="mt-8 flex justify-center gap-2">
-                    {{-- Pagination Content --}}
+                    
                 </div>
             </div>
         </div>
     </main>
 
-    {{-- MODAL: Vendor Ledger --}}
+    
     <div id="historyModal" class="fixed inset-0 bg-[#0f172a]/80 hidden justify-center items-center z-[60] p-2 sm:p-4 backdrop-blur-sm transition-all">
         <div id="historyModalBox" class="bg-white w-full max-w-6xl max-h-[90vh] rounded-[40px] shadow-3xl flex flex-col overflow-hidden transform scale-95 opacity-0 transition-all duration-300">
             <div class="p-6 border-b flex justify-between items-center bg-[#0f172a] shrink-0 text-white">
@@ -90,13 +90,13 @@
             </div>
 
             <div class="flex flex-col lg:flex-row flex-grow overflow-hidden bg-slate-50">
-                {{-- Transaction Manifest --}}
+                
                 <div class="lg:w-2/3 flex-grow overflow-y-auto p-6 border-r border-slate-200 custom-scrollbar bg-white">
                     <h3 class="text-[10px] font-black uppercase text-slate-400 mb-6 tracking-widest italic border-l-4 border-[#f59e0b] pl-3">Transaction Manifest</h3>
                     <div id="historyContent" class="overflow-x-auto rounded-3xl border border-slate-50 shadow-sm"></div>
                 </div>
 
-                {{-- Record Payment --}}
+                
                 <div class="lg:w-1/3 p-6 flex flex-col shrink-0 overflow-y-auto bg-[#f8fafc]">
                     <div class="bg-white p-6 rounded-[30px] shadow-sm border border-amber-100 mb-8 text-center ring-8 ring-amber-50/30">
                         <p class="text-[9px] font-black text-amber-600 uppercase tracking-widest mb-1">Total Payable Balance</p>
@@ -122,7 +122,7 @@
         </div>
     </div>
 
-    {{-- MODAL: Add/Edit Vendor --}}
+    
     <div id="supplierModal" class="fixed inset-0 bg-[#0f172a]/80 hidden justify-center items-center z-[60] p-2 sm:p-4 backdrop-blur-sm transition-all">
         <div id="supplierModalBox" class="bg-white w-full max-w-2xl max-h-[95vh] overflow-y-auto rounded-[40px] shadow-3xl p-8 transform scale-95 opacity-0 transition-all duration-300 flex flex-col">
             <div class="flex justify-between items-center mb-8 border-b border-slate-100 pb-5">
@@ -134,7 +134,7 @@
             </div>
 
             <form id="supplierForm" onsubmit="handleFormSubmit(event)" class="space-y-6">
-                @csrf
+                <?php echo csrf_field(); ?>
                 <div id="formAlerts"></div>
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
                     <div class="space-y-1">
@@ -165,9 +165,9 @@
             </form>
         </div>
     </div>
-@endsection
+<?php $__env->stopSection(); ?>
 
-@push('scripts')
+<?php $__env->startPush('scripts'); ?>
 <script>
     let activeSupplierId = null;
     let currentPage = 1;
@@ -221,7 +221,7 @@
         const loader = '<tr><td colspan="5" class="py-20 text-center"><i class="fa-solid fa-spinner fa-spin text-3xl text-amber-500"></i></td></tr>';
         tableBody.innerHTML = loader;
 
-        fetch(`{{ route('suppliers.fetch') }}?page=${page}&search=${search}&balance_filter=${balance}`)
+        fetch(`<?php echo e(route('suppliers.fetch')); ?>?page=${page}&search=${search}&balance_filter=${balance}`)
             .then(res => res.json())
             .then(data => {
                 let tableHtml = '';
@@ -353,7 +353,7 @@
         try {
             const res = await fetch(`/suppliers/${activeSupplierId}/payment`, {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json', 'X-CSRF-TOKEN': '{{ csrf_token() }}' },
+                headers: { 'Content-Type': 'application/json', 'X-CSRF-TOKEN': '<?php echo e(csrf_token()); ?>' },
                 body: JSON.stringify({ type: document.getElementById('manualType').value, amount })
             });
             if (res.ok) {
@@ -369,13 +369,13 @@
         saveButton.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Processing...';
         const formData = new FormData(event.target);
         const data = Object.fromEntries(formData.entries());
-        const url = activeSupplierId ? `/suppliers/${activeSupplierId}` : '{{ route("suppliers.store") }}';
+        const url = activeSupplierId ? `/suppliers/${activeSupplierId}` : '<?php echo e(route("suppliers.store")); ?>';
         if (activeSupplierId) data._method = 'PUT';
 
         try {
             const res = await fetch(url, {
                 method: 'POST',
-                headers: { 'X-CSRF-TOKEN': '{{ csrf_token() }}', 'Accept': 'application/json', 'Content-Type': 'application/json' },
+                headers: { 'X-CSRF-TOKEN': '<?php echo e(csrf_token()); ?>', 'Accept': 'application/json', 'Content-Type': 'application/json' },
                 body: JSON.stringify(data)
             });
             if (res.ok) { closeModal(); fetchData(activeSupplierId ? currentPage : 1); }
@@ -401,7 +401,7 @@
 
     function deleteSupplier(id, name) {
         if (confirm(`Archive Supplier "${name}" permanently?`)) {
-            fetch(`/suppliers/${id}`, { method: 'POST', headers: { 'Content-Type': 'application/json', 'X-CSRF-TOKEN': '{{ csrf_token() }}' }, body: JSON.stringify({ _method: 'DELETE' }) })
+            fetch(`/suppliers/${id}`, { method: 'POST', headers: { 'Content-Type': 'application/json', 'X-CSRF-TOKEN': '<?php echo e(csrf_token()); ?>' }, body: JSON.stringify({ _method: 'DELETE' }) })
                 .then(() => fetchData(currentPage));
         }
     }
@@ -413,4 +413,5 @@
     .custom-scrollbar::-webkit-scrollbar-track { background: #f8fafc; }
     .custom-scrollbar::-webkit-scrollbar-thumb { background: #e2e8f0; border-radius: 10px; }
 </style>
-@endpush
+<?php $__env->stopPush(); ?>
+<?php echo $__env->make('layouts.main', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?><?php /**PATH E:\code_2\general-store\resources\views/pages/supplier.blade.php ENDPATH**/ ?>

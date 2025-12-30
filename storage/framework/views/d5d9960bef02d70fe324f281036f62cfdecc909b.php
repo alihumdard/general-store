@@ -2,9 +2,9 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <meta name="csrf-token" content="{{ csrf_token() }}">
-    <title>@yield('title', 'RetailPro')</title>
-    @include('includes.head')
+    <meta name="csrf-token" content="<?php echo e(csrf_token()); ?>">
+    <title><?php echo $__env->yieldContent('title', 'RetailPro'); ?></title>
+    <?php echo $__env->make('includes.head', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?>
     
     <style>
               body {
@@ -93,30 +93,24 @@
 
     <div id="app-content">
         <div class="flex min-h-screen">
-            @include('includes.sidebar')
+            <?php echo $__env->make('includes.sidebar', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?>
             
             <div class="flex-1 flex flex-col">
-                @include('includes.header')
+                <?php echo $__env->make('includes.header', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?>
                 <main class="flex-grow">
-                     @yield('content')
+                     <?php echo $__env->yieldContent('content'); ?>
                 </main>
-                @include('includes.footer')
+                <?php echo $__env->make('includes.footer', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?>
             </div>
         </div>
 
-        {{-- <div style="position: fixed; bottom: 100px; right: 30px; z-index: 999;">
-            <a target="_blank" href="https://wa.me/917845667204">
-                <div style="background-color: #42db87; color: #fff; width: 55px; height: 55px; font-size: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; animation: pulsing 1.5s infinite; shadow: 0 10px 15px rgba(0,0,0,0.2);">
-                    <i class="fab fa-whatsapp"></i>
-                </div>
-            </a>
-        </div> --}}
+        
 
-        @include('includes.mobile-nav')
+        <?php echo $__env->make('includes.mobile-nav', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?>
     </div>
     
-    @include('includes.script')
-    @stack('scripts')
+    <?php echo $__env->make('includes.script', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?>
+    <?php echo $__env->yieldPushContent('scripts'); ?>
 
     <script>
         window.addEventListener('load', function() {
@@ -135,4 +129,4 @@
         });
     </script>
 </body>
-</html>
+</html><?php /**PATH E:\code_2\general-store\resources\views/layouts/main.blade.php ENDPATH**/ ?>

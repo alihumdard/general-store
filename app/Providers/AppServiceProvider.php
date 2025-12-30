@@ -1,10 +1,10 @@
 <?php
+
 namespace App\Providers;
 
 use App\Models\Setting;
-use Illuminate\Support\Facades\View; // Yeh line add karein
+use Illuminate\Support\Facades\View;
 use Illuminate\Support\ServiceProvider;
-// Yeh line add karein
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -13,9 +13,11 @@ class AppServiceProvider extends ServiceProvider
 
     public function boot()
     {
-        // Ye code ensure karega ke 'siteSettings' variable har sidebar ko mile
-       View::composer('*', function ($view) {
-        $view->with('siteSettings', Setting::first());
-    });
+        // View Composer use karein taake har view ko 'siteSettings' mile
+        View::composer('*', function ($view) {
+            // Fresh data fetch karne ke liye database se direct query
+            $settings = Setting::first();
+            $view->with('siteSettings', $settings);
+        });
     }
 }

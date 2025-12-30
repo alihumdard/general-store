@@ -1,0 +1,2 @@
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script><?php /**PATH E:\code_2\general-store\resources\views/includes/script.blade.php ENDPATH**/ ?>

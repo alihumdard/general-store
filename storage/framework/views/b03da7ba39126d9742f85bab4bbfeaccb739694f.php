@@ -1,7 +1,7 @@
-@extends('layouts.main')
-@section('title', 'RetailPro | Store Settings')
 
-@section('content')
+<?php $__env->startSection('title', 'RetailPro | Store Settings'); ?>
+
+<?php $__env->startSection('content'); ?>
 <main class="overflow-y-auto p-4 md:p-8 min-h-[calc(100vh-70px)] pt-24 bg-[#f1f5f9]">
 
     <div class="max-w-[1600px] mx-auto w-full">
@@ -11,7 +11,7 @@
         <div class="bg-white rounded-3xl shadow-xl border border-slate-100 p-4 md:p-8">
 
             <div class="border-b border-slate-100 flex flex-wrap items-center gap-6 text-slate-400 text-sm font-black mb-8 uppercase tracking-widest">
-                {{-- Tab Buttons - RetailPro Styled --}}
+                
                 <button data-tab="general" class="tab-button active-tab pb-4 border-b-2 border-amber-500 text-slate-900 transition duration-200 flex items-center gap-2">
                     <i class="fa-solid fa-store text-amber-500"></i> Store Terminal
                 </button>
@@ -28,9 +28,9 @@
 
             <div id="settingsContent" class="py-4">
                 
-                {{-- TAB 1: GENERAL SETTINGS FORM --}}
-                <form action="{{ route('settings.update.general') }}" method="POST" enctype="multipart/form-data">
-                    @csrf
+                
+                <form action="<?php echo e(route('settings.update.general')); ?>" method="POST" enctype="multipart/form-data">
+                    <?php echo csrf_field(); ?>
                     <div data-content="general" class="tab-content active-content">
                         <h3 class="text-lg font-black text-slate-800 mb-8 uppercase tracking-tighter italic flex items-center gap-3">
                             <span class="w-1.5 h-6 bg-amber-500 rounded-full"></span>
@@ -38,13 +38,13 @@
                         </h3>
                         
                         <div class="flex flex-col lg:flex-row gap-12">
-                            {{-- Logo Upload with Terminal Preview --}}
+                            
                             <div class="w-full lg:w-1/3 flex flex-col items-center text-center">
                                 <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-6">Store Logo / Branding</label>
                                 <div class="relative group">
                                     <div class="absolute inset-0 bg-amber-500 rounded-[2.5rem] rotate-3 group-hover:rotate-0 transition-transform duration-300 opacity-20"></div>
                                     <img id="logoPreview" 
-                                         src="{{ ($settings && $settings->logo) ? asset('storage/'.$settings->logo) : asset('assets/images/images (3).jpg') }}" 
+                                         src="<?php echo e(($settings && $settings->logo) ? asset('storage/'.$settings->logo) : asset('assets/images/images (3).jpg')); ?>" 
                                          class="w-52 h-52 rounded-[2.5rem] object-cover border-4 border-white shadow-2xl relative z-10 transition group-hover:opacity-90">
                                     <input type="file" name="logo" onchange="previewImage(this)" class="absolute inset-0 opacity-0 cursor-pointer z-20">
                                 </div>
@@ -54,33 +54,33 @@
                             <div class="flex-1 grid grid-cols-1 md:grid-cols-2 gap-6">
                                 <div class="space-y-1">
                                     <label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Business Name *</label>
-                                    <input type="text" name="pharmacy_name" value="{{ $settings->pharmacy_name ?? '' }}" required
+                                    <input type="text" name="pharmacy_name" value="<?php echo e($settings->pharmacy_name ?? ''); ?>" required
                                         class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl font-bold text-sm outline-none focus:ring-4 focus:ring-amber-500/10 focus:border-amber-500 transition">
                                 </div>
                                 <div class="space-y-1">
                                     <label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Admin Username *</label>
-                                    <input type="text" name="user_name" value="{{ $settings->user_name ?? '' }}" required
+                                    <input type="text" name="user_name" value="<?php echo e($settings->user_name ?? ''); ?>" required
                                         class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl font-bold text-sm outline-none focus:ring-4 focus:ring-amber-500/10 focus:border-amber-500 transition">
                                 </div>
                                 <div class="space-y-1">
                                     <label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Store Helpline</label>
-                                    <input type="text" name="phone_number" value="{{ $settings->phone_number ?? '' }}" placeholder="+92 XXX XXXXXXX"
+                                    <input type="text" name="phone_number" value="<?php echo e($settings->phone_number ?? ''); ?>" placeholder="+92 XXX XXXXXXX"
                                         class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl font-bold text-sm outline-none focus:ring-4 focus:ring-amber-500/10 focus:border-amber-500 transition">
                                 </div>
                                 <div class="space-y-1">
                                     <label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Business Email</label>
-                                    <input type="email" name="email" value="{{ $settings->email ?? '' }}" placeholder="info@store.com"
+                                    <input type="email" name="email" value="<?php echo e($settings->email ?? ''); ?>" placeholder="info@store.com"
                                         class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl font-bold text-sm outline-none focus:ring-4 focus:ring-amber-500/10 focus:border-amber-500 transition">
                                 </div>
                                 <div class="space-y-1">
                                     <label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Registration / Tax ID</label>
-                                    <input type="text" name="tax_id" value="{{ $settings->tax_id ?? '' }}" placeholder="GST-XXXXXX"
+                                    <input type="text" name="tax_id" value="<?php echo e($settings->tax_id ?? ''); ?>" placeholder="GST-XXXXXX"
                                         class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl font-bold text-sm outline-none focus:ring-4 focus:ring-amber-500/10 focus:border-amber-500 transition">
                                 </div>
                                 <div class="md:col-span-2 space-y-1">
                                     <label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Store Address</label>
                                     <textarea name="address" rows="3" placeholder="Locality, City..."
-                                        class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl font-bold text-sm outline-none focus:ring-4 focus:ring-amber-500/10 focus:border-amber-500 transition resize-none shadow-inner">{{ $settings->address ?? '' }}</textarea>
+                                        class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl font-bold text-sm outline-none focus:ring-4 focus:ring-amber-500/10 focus:border-amber-500 transition resize-none shadow-inner"><?php echo e($settings->address ?? ''); ?></textarea>
                                 </div>
                             </div>
                         </div>
@@ -93,25 +93,25 @@
                     </div>
                 </form>
 
-                {{-- TAB 2: CURRENCY & TAX --}}
+                
                 <div data-content="currency_tax" class="tab-content hidden">
                     <h3 class="text-lg font-black text-slate-800 mb-8 uppercase tracking-tighter italic border-l-4 border-amber-500 pl-3">Financial Protocols</h3>
                     <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
                         <div class="space-y-1">
                             <label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Store Currency</label>
-                            <input type="text" value="{{ $settings->currency ?? 'PKR' }}" class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl font-black text-amber-600 outline-none shadow-sm">
+                            <input type="text" value="<?php echo e($settings->currency ?? 'PKR'); ?>" class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl font-black text-amber-600 outline-none shadow-sm">
                         </div>
                         <div class="space-y-1">
                             <label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Flat Tax Rate (GST)</label>
                             <div class="relative">
-                                <input type="number" value="{{ $settings->tax_rate ?? '17' }}" class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl font-black text-slate-800 outline-none shadow-sm">
+                                <input type="number" value="<?php echo e($settings->tax_rate ?? '17'); ?>" class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl font-black text-slate-800 outline-none shadow-sm">
                                 <span class="absolute right-5 top-1/2 -translate-y-1/2 text-slate-400 font-black text-xs">%</span>
                             </div>
                         </div>
                     </div>
                 </div>
                 
-                {{-- TAB 3: USER ROLES --}}
+                
                 <div data-content="user_roles" class="tab-content hidden">
                     <div class="flex flex-col lg:flex-row gap-8">
                         <div class="w-full lg:w-72 space-y-3">
@@ -136,7 +136,7 @@
                     </div>
                 </div>
 
-                {{-- TAB 4: BACKUP --}}
+                
                 <div data-content="backup" class="tab-content hidden">
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-center bg-[#0f172a] p-12 rounded-[2.5rem] shadow-2xl">
                         <div>
@@ -145,7 +145,7 @@
                                 Cloud Encryption Active
                             </p>
                             <h4 class="text-white text-2xl font-black uppercase tracking-tighter leading-tight italic">Inventory Data Vault is Secure.</h4>
-                            <p class="text-slate-500 text-xs mt-4 font-bold uppercase tracking-widest">Status Update: <span class="text-slate-200">{{ now()->format('d M Y | h:i A') }}</span></p>
+                            <p class="text-slate-500 text-xs mt-4 font-bold uppercase tracking-widest">Status Update: <span class="text-slate-200"><?php echo e(now()->format('d M Y | h:i A')); ?></span></p>
                         </div>
                         <div class="flex md:justify-end">
                             <button class="px-8 py-4 bg-amber-500 hover:bg-amber-600 text-[#0f172a] rounded-2xl shadow-xl font-black uppercase text-xs tracking-widest transition active:scale-95 flex items-center gap-3">
@@ -160,9 +160,9 @@
         </div>
     </div>
 </main>
-@endsection
+<?php $__env->stopSection(); ?>
 
-@push('scripts')
+<?php $__env->startPush('scripts'); ?>
 <script>
     // Image Preview Logic 
     function previewImage(input) {
@@ -228,4 +228,5 @@
     .fa-spin-hover:hover { animation: spin 2s infinite linear; }
     @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
 </style>
-@endpush
+<?php $__env->stopPush(); ?>
+<?php echo $__env->make('layouts.main', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?><?php /**PATH E:\code_2\general-store\resources\views/pages/settings.blade.php ENDPATH**/ ?>

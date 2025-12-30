@@ -1,11 +1,11 @@
-@extends('layouts.main')
-@section('title', 'RetailPro | Customer Accounts')
 
-@section('content')
+<?php $__env->startSection('title', 'RetailPro | Customer Accounts'); ?>
+
+<?php $__env->startSection('content'); ?>
 <main class="h-screen overflow-y-auto p-2 sm:p-4 md:p-8 pt-24 bg-[#f1f5f9] flex flex-col">
     <div class="max-w-[1600px] mx-auto w-full">
         
-        {{-- HEADER SECTION --}}
+        
         <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-8 border-b border-slate-200 pb-6">
             <div>
                 <h1 class="text-xl sm:text-2xl md:text-3xl font-black text-slate-900 tracking-tighter italic uppercase leading-none">
@@ -24,7 +24,7 @@
         </div>
 
         <div class="bg-white rounded-3xl shadow-xl border border-slate-100 p-4 sm:p-8">
-            {{-- Filters & Search --}}
+            
             <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-4 mb-8">
                 <div class="relative w-full lg:w-1/3">
                     <i class="fa-solid fa-search absolute left-4 top-1/2 -translate-y-1/2 text-slate-400"></i>
@@ -43,7 +43,7 @@
                 </div>
             </div>
 
-            {{-- DESKTOP VIEW --}}
+            
             <div class="hidden lg:block overflow-hidden rounded-2xl border border-slate-100 shadow-sm">
                 <table class="w-full border-collapse text-sm">
                     <thead>
@@ -56,14 +56,14 @@
                         </tr>
                     </thead>
                     <tbody id="customersTableBody" class="divide-y divide-slate-50 text-slate-800 bg-white">
-                        {{-- Data loaded via AJAX --}}
+                        
                     </tbody>
                 </table>
             </div>
 
-            {{-- MOBILE VIEW --}}
+            
             <div id="customersCardContainer" class="lg:hidden grid grid-cols-1 sm:grid-cols-2 gap-4">
-                {{-- Data loaded via AJAX --}}
+                
             </div>
             
             <div id="customersPagination" class="mt-8 flex justify-center gap-2"></div>
@@ -71,7 +71,7 @@
     </div>
 </main>
 
-{{-- MODAL: Customer Profile --}}
+
 <div id="customerModal" class="fixed inset-0 z-50 hidden items-center justify-center p-4 bg-[#0f172a]/80 backdrop-blur-sm transition-all">
     <div id="customerModalBox" class="bg-white w-full max-w-2xl rounded-[40px] shadow-3xl overflow-hidden flex flex-col opacity-0 scale-95 transition-all duration-300">
         <div class="bg-[#0f172a] px-8 py-6 flex justify-between items-center text-white shrink-0">
@@ -83,7 +83,7 @@
         </div>
 
         <form id="customerForm" onsubmit="handleFormSubmit(event)" class="p-8 overflow-y-auto bg-[#f8fafc]">
-            @csrf
+            <?php echo csrf_field(); ?>
             <div id="formAlerts" class="mb-6"></div>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div class="space-y-1">
@@ -107,7 +107,7 @@
     </div>
 </div>
 
-{{-- MODAL: Account Statement --}}
+
 <div id="historyModal" class="fixed inset-0 z-50 hidden items-center justify-center p-4 bg-[#0f172a]/90 backdrop-blur-sm transition-all">
     <div id="historyModalBox" class="bg-white w-full max-w-6xl rounded-[40px] shadow-3xl overflow-hidden flex flex-col max-h-[90vh] opacity-0 scale-95 transition-all duration-300">
         <div class="bg-[#0f172a] px-8 py-6 flex justify-between items-center text-white shrink-0">
@@ -155,9 +155,9 @@
         </div>
     </div>
 </div>
-@endsection
+<?php $__env->stopSection(); ?>
 
-@push('scripts')
+<?php $__env->startPush('scripts'); ?>
 <script>
     let activeCustomerId = null;
     let activeCustomerName = "";
@@ -201,7 +201,7 @@
 
         tBody.innerHTML = '<tr><td colspan="5" class="py-20 text-center"><i class="fa-solid fa-spinner fa-spin text-3xl text-amber-500"></i></td></tr>';
 
-        fetch(`{{ route('customers.fetch') }}?page=${page}&search=${search}&credit_filter=${filter}`)
+        fetch(`<?php echo e(route('customers.fetch')); ?>?page=${page}&search=${search}&credit_filter=${filter}`)
             .then(res => res.json())
             .then(data => {
                 let tHtml = ''; let cHtml = '';
@@ -278,7 +278,7 @@
 
     window.deleteCustomer = (id, name) => {
         if (confirm(`Remove customer "${name}"?`)) {
-            fetch(`/customers/${id}`, { method: 'POST', headers: { 'X-CSRF-TOKEN': '{{ csrf_token() }}', 'Content-Type': 'application/json' }, body: JSON.stringify({ _method: 'DELETE' }) }).then(() => fetchData(currentPage));
+            fetch(`/customers/${id}`, { method: 'POST', headers: { 'X-CSRF-TOKEN': '<?php echo e(csrf_token()); ?>', 'Content-Type': 'application/json' }, body: JSON.stringify({ _method: 'DELETE' }) }).then(() => fetchData(currentPage));
         }
     }
 
@@ -329,7 +329,7 @@
         btn.disabled = true; btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i>';
         try {
             const res = await fetch(`/customers/${activeCustomerId}/payment`, {
-                method: 'POST', headers: { 'Content-Type': 'application/json', 'X-CSRF-TOKEN': '{{ csrf_token() }}' },
+                method: 'POST', headers: { 'Content-Type': 'application/json', 'X-CSRF-TOKEN': '<?php echo e(csrf_token()); ?>' },
                 body: JSON.stringify({ type: document.getElementById('manualType').value, amount })
             });
             if (res.ok) { document.getElementById('manualAmount').value = ''; viewCustomerHistory(activeCustomerId); fetchData(currentPage); }
@@ -342,11 +342,11 @@
         btn.disabled = true; btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i>';
         const formData = new FormData(event.target);
         const data = Object.fromEntries(formData.entries());
-        const url = activeCustomerId ? `/customers/${activeCustomerId}` : '{{ route("customers.store") }}';
+        const url = activeCustomerId ? `/customers/${activeCustomerId}` : '<?php echo e(route("customers.store")); ?>';
         if (activeCustomerId) data._method = 'PUT';
         try {
             const res = await fetch(url, {
-                method: 'POST', headers: { 'X-CSRF-TOKEN': '{{ csrf_token() }}', 'Accept': 'application/json', 'Content-Type': 'application/json' },
+                method: 'POST', headers: { 'X-CSRF-TOKEN': '<?php echo e(csrf_token()); ?>', 'Accept': 'application/json', 'Content-Type': 'application/json' },
                 body: JSON.stringify(data)
             });
             if (res.ok) { closeCustomerModal(); fetchData(currentPage); }
@@ -367,4 +367,5 @@
     .custom-scrollbar::-webkit-scrollbar-track { background: #f8fafc; }
     .custom-scrollbar::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
 </style>
-@endpush
+<?php $__env->stopPush(); ?>
+<?php echo $__env->make('layouts.main', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?><?php /**PATH E:\code_2\general-store\resources\views/pages/customers.blade.php ENDPATH**/ ?>

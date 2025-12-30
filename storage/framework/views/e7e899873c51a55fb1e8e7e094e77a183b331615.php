@@ -1,12 +1,12 @@
-@extends('layouts.main')
-@section('title', 'RetailPro | Checkout Terminal')
 
-@section('content')
+<?php $__env->startSection('title', 'RetailPro | Checkout Terminal'); ?>
+
+<?php $__env->startSection('content'); ?>
 <main class="h-screen overflow-y-auto p-4 md:p-8 pt-20 bg-slate-50 flex flex-col">
     <div class="max-w-[1600px] mx-auto w-full">
         <div class="grid grid-cols-1 lg:grid-cols-[2.5fr_1.5fr] gap-6 items-stretch">
 
-            {{-- LEFT SIDE: PRODUCT CATALOG SECTION --}}
+            
             <div class="bg-white rounded-3xl shadow-xl border border-slate-100 p-6 h-[85vh] flex flex-col">
                 <div class="flex flex-col md:flex-row items-center justify-between mb-6 gap-4 border-b border-slate-50 pb-4">
                     <div>
@@ -14,7 +14,7 @@
                         <p class="text-[10px] text-amber-600 font-bold uppercase tracking-widest mt-1">Inventory Management Terminal</p>
                     </div>
                     
-                    {{-- Search Bar --}}
+                    
                     <div class="relative w-full max-w-md">
                         <i class="fa-solid fa-magnifying-glass absolute left-4 top-1/2 -translate-y-1/2 text-slate-400"></i>
                         <input id="productSearch" oninput="fetchProducts(1)"
@@ -23,41 +23,41 @@
                     </div>
                 </div>
 
-                {{-- Product Grid --}}
+                
                 <div id="productGrid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-4 flex-grow overflow-y-auto pr-2 py-2 content-start min-h-0 custom-scrollbar">
-                    {{-- Dynamically loaded via AJAX --}}
+                    
                 </div>
 
-                {{-- Pagination Links --}}
+                
                 <div id="paginationLinks" class="mt-4 pt-4 border-t border-slate-100 flex justify-center gap-2"></div>
             </div>
 
-            {{-- RIGHT SIDE: CART & CHECKOUT SECTION --}}
+            
             <div class="bg-white rounded-3xl shadow-xl border border-slate-100 p-6 h-[85vh] flex flex-col overflow-hidden">
                 <div class="border-b border-slate-100 pb-4 mb-4">
                     <div class="flex justify-between items-center">
                         <h3 class="text-xl font-black text-slate-900 tracking-tighter uppercase leading-none italic">Sale Receipt</h3>
-                        <span class="text-[10px] bg-slate-100 px-2 py-1 rounded-lg font-black text-slate-500 uppercase tracking-widest">Order #{{ date('ymd') }}-{{ rand(10,99) }}</span>
+                        <span class="text-[10px] bg-slate-100 px-2 py-1 rounded-lg font-black text-slate-500 uppercase tracking-widest">Order #<?php echo e(date('ymd')); ?>-<?php echo e(rand(10,99)); ?></span>
                     </div>
                     
                     <div class="mt-4 flex items-center gap-3">
                         <select id="customerSelect" class="flex-1 px-4 py-2.5 border border-slate-200 rounded-xl bg-slate-50 text-sm font-bold focus:ring-4 focus:ring-amber-500/10 outline-none">
                             <option value="walkin">Walk-in Customer</option>
-                            @foreach($customers as $customer)
-                                <option value="{{ $customer->id }}">
-                                    {{ $customer->customer_name }} (Ledger: {{ number_format($customer->credit_balance, 0) }})
+                            <?php $__currentLoopData = $customers; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $customer): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                <option value="<?php echo e($customer->id); ?>">
+                                    <?php echo e($customer->customer_name); ?> (Ledger: <?php echo e(number_format($customer->credit_balance, 0)); ?>)
                                 </option>
-                            @endforeach
+                            <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                         </select>
                     </div>
                 </div>
 
-                {{-- Scrollable Cart List --}}
+                
                 <div id="cartList" class="flex-grow space-y-3 overflow-y-auto pr-2 mb-4 custom-scrollbar">
-                    {{-- Basket items appear here --}}
+                    
                 </div>
 
-                {{-- CALCULATION BOX (DARK THEME) --}}
+                
                 <div class="mt-auto space-y-3 bg-slate-900 p-5 rounded-3xl shadow-2xl">
                     <div class="grid grid-cols-2 gap-4">
                         <div>
@@ -82,7 +82,7 @@
                         <span id="grandTotal" class="text-2xl font-black italic tracking-tighter leading-none">PKR 0.00</span>
                     </div>
 
-                    {{-- Cash Received Input --}}
+                    
                     <div class="pt-3 border-t border-slate-800">
                         <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1 block mb-1">Cash Received</label>
                         <input type="number" id="cashReceived" oninput="calculateTotals()" placeholder="0.00" 
@@ -95,7 +95,7 @@
                     </div>
                 </div>
 
-                {{-- Action Buttons --}}
+                
                 <div class="grid grid-cols-2 gap-3 mt-6">
                     <button onclick="processCheckout('cash')" class="bg-slate-900 text-white py-4 rounded-2xl shadow-lg hover:bg-black font-black uppercase text-xs tracking-widest transition active:scale-95 border border-slate-700">
                         <i class="fa-solid fa-receipt mr-2 text-amber-500"></i> Cash Sale
@@ -108,9 +108,9 @@
         </div>
     </div>
 </main>
-@endsection
+<?php $__env->stopSection(); ?>
 
-@push('scripts')
+<?php $__env->startPush('scripts'); ?>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
     let cart = [];
@@ -124,7 +124,7 @@
         grid.innerHTML = '<div class="col-span-full py-20 text-center"><i class="fa-solid fa-spinner fa-spin text-3xl text-amber-500"></i></div>';
 
         try {
-            const response = await fetch(`{{ route('pos.search') }}?page=${page}&search=${encodeURIComponent(search)}`);
+            const response = await fetch(`<?php echo e(route('pos.search')); ?>?page=${page}&search=${encodeURIComponent(search)}`);
             const data = await response.json();
             
             renderGrid(data.data);
@@ -297,9 +297,9 @@
         });
 
         try {
-            const response = await fetch("{{ route('pos.checkout') }}", {
+            const response = await fetch("<?php echo e(route('pos.checkout')); ?>", {
                 method: "POST",
-                headers: { "Content-Type": "application/json", "X-CSRF-TOKEN": "{{ csrf_token() }}" },
+                headers: { "Content-Type": "application/json", "X-CSRF-TOKEN": "<?php echo e(csrf_token()); ?>" },
                 body: JSON.stringify(payload)
             });
             const res = await response.json();
@@ -329,4 +329,5 @@
     .animate-in { animation: fadeIn 0.3s ease-out; }
     @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 </style>
-@endpush
+<?php $__env->stopPush(); ?>
+<?php echo $__env->make('layouts.main', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?><?php /**PATH E:\code_2\general-store\resources\views/pages/pos.blade.php ENDPATH**/ ?>

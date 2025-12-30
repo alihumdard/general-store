@@ -24,7 +24,6 @@ class MedicineController extends Controller
 
         $variants = $query->latest()->paginate(10);
 
-        // Dropdown ke liye saari medicines aur unke variants fetch karein
         $allMedicines = Medicine::with('variants')->get();
 
         return view('pages.inventory', compact('variants', 'allMedicines'));
@@ -109,10 +108,8 @@ class MedicineController extends Controller
             $variant  = MedicineVariant::findOrFail($id);
             $medicine = $variant->medicine;
 
-            // Delete the variant
             $variant->delete();
 
-            // Optional: If this was the last variant, delete the medicine record too
             if ($medicine->variants()->count() === 0) {
                 $medicine->delete();
             }

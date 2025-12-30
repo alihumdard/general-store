@@ -9,22 +9,14 @@ use Exception;
 
 class SettingController extends Controller
 {
-    /**
-     * Settings page dikhane ke liye
-     */
     public function index() 
     {
-        // Pehla record uthao, agar nahi hai toh khali model bhej do
         $settings = Setting::first() ?? new Setting();
         return view('pages.settings', compact('settings'));
     }
 
-    /**
-     * General settings update karne ke liye
-     */
     public function updateGeneral(Request $request) 
     {
-        // 1. Validation
         $data = $request->validate([
             'pharmacy_name' => 'required|string|max:255',
             'user_name'     => 'required|string|max:255',
@@ -36,33 +28,33 @@ class SettingController extends Controller
         ]);
 
         try {
-            // Maujooda settings uthao ya naya instance banao
             $settings = Setting::first() ?? new Setting();
 
-            // 2. Logo Handling
             if ($request->hasFile('logo')) {
-                // Purani image delete karein agar database mein path maujood hai
+                // Purani image delete karein agar maujood hai
                 if ($settings->logo && Storage::disk('public')->exists($settings->logo)) { 
                     Storage::disk('public')->delete($settings->logo); 
                 }
                 
                 // Nayi image store karein
                 $path = $request->file('logo')->store('uploads/branding', 'public');
-                $data['logo'] = $path;
+                $settings->logo = $path;
             }
 
-            // 3. Update or Create Logic
-            // Ye ensure karega ke hamesha ID: 1 wala ya pehla record hi update ho
-            Setting::updateOrCreate(
-                ['id' => $settings->id ?? 1], // Condition
-                $data // Data to update
-            );
+            // Baki data assign karein
+            $settings->pharmacy_name = $data['pharmacy_name'];
+            $settings->user_name     = $data['user_name'];
+            $settings->phone_number  = $data['phone_number'];
+            $settings->email         = $data['email'];
+            $settings->tax_id        = $data['tax_id'];
+            $settings->address       = $data['address'];
 
-            return back()->with('success', 'Pharmacy branding updated successfully!');
+            $settings->save();
+
+            return back()->with('success', 'Store settings updated successfully!');
 
         } catch (Exception $e) {
-            // Agar koi error aaye toh back bhejein error message ke saath
-            return back()->with('error', 'Something went wrong: ' . $e->getMessage());
+            return back()->with('error', 'Error: ' . $e->getMessage());
         }
     }
 }

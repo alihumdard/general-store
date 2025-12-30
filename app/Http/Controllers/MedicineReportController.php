@@ -11,10 +11,8 @@ class MedicineReportController extends Controller
 {
     public function index(Request $request)
     {
-        // 1. Get Filter Inputs
         $stockStatus = $request->input('stock_status'); // 'low', 'out', 'expired'
 
-        // 2. Build Query
         $query = MedicineVariant::with('medicine');
 
         if ($stockStatus == 'low') {
@@ -27,7 +25,6 @@ class MedicineReportController extends Controller
 
         $variants = $query->latest()->get();
 
-        // 3. Calculate Summary Cards
         $totalStockValue = $variants->sum(function($v) {
             return $v->stock_level * $v->purchase_price;
         });

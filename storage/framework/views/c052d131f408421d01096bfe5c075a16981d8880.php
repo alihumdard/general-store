@@ -1,11 +1,11 @@
-@extends('layouts.main')
-@section('title', 'RetailPro | Inventory Catalogue')
 
-@section('content')
+<?php $__env->startSection('title', 'RetailPro | Inventory Catalogue'); ?>
+
+<?php $__env->startSection('content'); ?>
 <main class="h-screen overflow-y-auto p-2 sm:p-4 md:p-8 pt-24 bg-[#f1f5f9] flex flex-col">
 
     <div class="max-w-7xl mx-auto w-full">
-        {{-- Page Header --}}
+        
         <div class="flex flex-col md:flex-row md:items-end md:justify-between mb-6 pb-6 border-b border-slate-200 gap-4">
             <div class="text-center md:text-left">
                 <h1 class="text-2xl md:text-3xl font-black text-slate-900 uppercase tracking-tighter italic">Inventory Catalogue</h1>
@@ -13,7 +13,7 @@
             </div>
             
             <div class="grid grid-cols-2 md:flex items-center gap-2 sm:gap-3">
-                <button onclick="window.location.href='{{ route('medicines.index') }}'" class="px-4 py-2.5 bg-white border border-slate-300 rounded-xl hover:bg-slate-50 flex items-center justify-center gap-2 shadow-sm transition text-xs font-bold text-slate-600">
+                <button onclick="window.location.href='<?php echo e(route('medicines.index')); ?>'" class="px-4 py-2.5 bg-white border border-slate-300 rounded-xl hover:bg-slate-50 flex items-center justify-center gap-2 shadow-sm transition text-xs font-bold text-slate-600">
                     <i class="fa-solid fa-rotate-right"></i> Reset
                 </button>
                 <button onclick="openProductModal()" class="px-4 py-2.5 bg-[#0f172a] hover:bg-slate-800 text-white rounded-xl shadow-xl font-black flex items-center justify-center gap-2 transition text-xs uppercase tracking-widest group">
@@ -22,16 +22,16 @@
             </div>
         </div>
 
-        {{-- Search Bar --}}
+        
         <div class="mb-6">
-            <form action="{{ route('medicines.index') }}" method="GET" class="relative max-w-md w-full">
+            <form action="<?php echo e(route('medicines.index')); ?>" method="GET" class="relative max-w-md w-full">
                 <i class="fa-solid fa-search absolute left-4 top-1/2 -translate-y-1/2 text-slate-400"></i>
-                <input type="text" name="search" value="{{ request('search') }}" placeholder="Search name, batch, or SKU..."
+                <input type="text" name="search" value="<?php echo e(request('search')); ?>" placeholder="Search name, batch, or SKU..."
                     class="w-full pl-11 pr-4 py-3 bg-white border border-slate-200 rounded-2xl outline-none text-sm text-slate-700 focus:ring-4 focus:ring-amber-500/20 focus:border-[#f59e0b] transition shadow-sm font-medium">
             </form>
         </div>
 
-        {{-- DESKTOP VIEW: Table --}}
+        
         <div class="hidden lg:block bg-white rounded-3xl shadow-xl border border-slate-100 overflow-hidden mb-10">
             <table class="w-full border-collapse text-sm">
                 <thead class="bg-[#0f172a] text-white text-left">
@@ -46,75 +46,77 @@
                     </tr>
                 </thead>
                 <tbody class="divide-y divide-slate-100">
-                    @forelse($variants as $variant)
-                    <tr class="hover:bg-slate-50 transition {{ $variant->stock_level <= $variant->reorder_level ? 'bg-red-50/50' : '' }}">
+                    <?php $__empty_1 = true; $__currentLoopData = $variants; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $variant): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); $__empty_1 = false; ?>
+                    <tr class="hover:bg-slate-50 transition <?php echo e($variant->stock_level <= $variant->reorder_level ? 'bg-red-50/50' : ''); ?>">
                         <td class="py-4 px-6 font-black text-slate-800">
-                            {{ $variant->medicine->name }} <br> 
-                            <span class="text-[9px] text-[#f59e0b] uppercase font-black tracking-wider">{{ $variant->sku }}</span>
+                            <?php echo e($variant->medicine->name); ?> <br> 
+                            <span class="text-[9px] text-[#f59e0b] uppercase font-black tracking-wider"><?php echo e($variant->sku); ?></span>
                         </td>
-                        <td class="py-4 px-4 text-slate-600 font-bold uppercase">{{ $variant->batch_no ?? '---' }}</td>
+                        <td class="py-4 px-4 text-slate-600 font-bold uppercase"><?php echo e($variant->batch_no ?? '---'); ?></td>
                         <td class="py-4 px-4">
-                            <span class="font-bold {{ $variant->expiry_date && \Carbon\Carbon::parse($variant->expiry_date)->isPast() ? 'text-red-600' : 'text-slate-500' }}">
-                                {{ $variant->expiry_date ? \Carbon\Carbon::parse($variant->expiry_date)->format('d M, Y') : 'N/A' }}
+                            <span class="font-bold <?php echo e($variant->expiry_date && \Carbon\Carbon::parse($variant->expiry_date)->isPast() ? 'text-red-600' : 'text-slate-500'); ?>">
+                                <?php echo e($variant->expiry_date ? \Carbon\Carbon::parse($variant->expiry_date)->format('d M, Y') : 'N/A'); ?>
+
                             </span>
                         </td>
                         <td class="py-4 px-4">
-                            <span class="font-black {{ $variant->stock_level <= $variant->reorder_level ? 'text-red-600' : 'text-emerald-600' }}">
-                                {{ $variant->stock_level }}
+                            <span class="font-black <?php echo e($variant->stock_level <= $variant->reorder_level ? 'text-red-600' : 'text-emerald-600'); ?>">
+                                <?php echo e($variant->stock_level); ?>
+
                             </span>
                         </td>
-                        <td class="py-4 px-4 text-right font-medium text-slate-500">PKR {{ number_format($variant->purchase_price, 2) }}</td>
-                        <td class="py-4 px-4 text-right font-black text-slate-900">PKR {{ number_format($variant->sale_price, 2) }}</td>
+                        <td class="py-4 px-4 text-right font-medium text-slate-500">PKR <?php echo e(number_format($variant->purchase_price, 2)); ?></td>
+                        <td class="py-4 px-4 text-right font-black text-slate-900">PKR <?php echo e(number_format($variant->sale_price, 2)); ?></td>
                         <td class="py-4 px-6 text-center">
                             <div class="flex justify-center gap-3">
-                                <button onclick='openEditModal({!! json_encode($variant) !!}, {!! json_encode($variant->medicine) !!})' class="text-slate-400 hover:text-[#f59e0b] transition">
+                                <button onclick='openEditModal(<?php echo json_encode($variant); ?>, <?php echo json_encode($variant->medicine); ?>)' class="text-slate-400 hover:text-[#f59e0b] transition">
                                     <i class="fa-solid fa-pen-to-square"></i>
                                 </button>
-                                <button onclick="deleteProduct({{ $variant->id }})" class="text-red-300 hover:text-red-600 transition">
+                                <button onclick="deleteProduct(<?php echo e($variant->id); ?>)" class="text-red-300 hover:text-red-600 transition">
                                     <i class="fa-solid fa-trash-can"></i>
                                 </button>
                             </div>
                         </td>
                     </tr>
-                    @empty
+                    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); if ($__empty_1): ?>
                     <tr><td colspan="7" class="py-20 text-center text-slate-400 italic font-medium uppercase tracking-widest text-xs">No product matches found.</td></tr>
-                    @endforelse
+                    <?php endif; ?>
                 </tbody>
             </table>
         </div>
 
-        {{-- MOBILE VIEW --}}
+        
         <div class="lg:hidden grid grid-cols-1 sm:grid-cols-2 gap-4 mb-10">
-            @forelse($variants as $variant)
-            <div class="bg-white rounded-2xl p-4 shadow-md border border-slate-100 {{ $variant->stock_level <= $variant->reorder_level ? 'border-l-4 border-l-red-500' : 'border-l-4 border-l-[#f59e0b]' }}">
+            <?php $__empty_1 = true; $__currentLoopData = $variants; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $variant): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); $__empty_1 = false; ?>
+            <div class="bg-white rounded-2xl p-4 shadow-md border border-slate-100 <?php echo e($variant->stock_level <= $variant->reorder_level ? 'border-l-4 border-l-red-500' : 'border-l-4 border-l-[#f59e0b]'); ?>">
                 <div class="flex justify-between items-start mb-3">
                     <div>
-                        <h3 class="font-black text-slate-900 text-sm uppercase italic leading-tight">{{ $variant->medicine->name }}</h3>
-                        <span class="text-[10px] text-[#f59e0b] font-black uppercase tracking-wider">{{ $variant->sku }}</span>
+                        <h3 class="font-black text-slate-900 text-sm uppercase italic leading-tight"><?php echo e($variant->medicine->name); ?></h3>
+                        <span class="text-[10px] text-[#f59e0b] font-black uppercase tracking-wider"><?php echo e($variant->sku); ?></span>
                     </div>
                     <div class="flex gap-2">
-                        <button onclick='openEditModal({!! json_encode($variant) !!}, {!! json_encode($variant->medicine) !!})' class="w-8 h-8 rounded-lg bg-slate-50 text-slate-600 flex items-center justify-center hover:bg-[#f59e0b] hover:text-white transition-colors">
+                        <button onclick='openEditModal(<?php echo json_encode($variant); ?>, <?php echo json_encode($variant->medicine); ?>)' class="w-8 h-8 rounded-lg bg-slate-50 text-slate-600 flex items-center justify-center hover:bg-[#f59e0b] hover:text-white transition-colors">
                             <i class="fa-solid fa-pen text-xs"></i>
                         </button>
                     </div>
                 </div>
                 <div class="grid grid-cols-2 gap-2 text-[11px] mb-3">
-                    <div class="text-slate-500 font-bold uppercase">Batch: <span class="text-slate-800">{{ $variant->batch_no ?? '---' }}</span></div>
-                    <div class="text-slate-500 text-right font-bold uppercase">Stock: <span class="font-black {{ $variant->stock_level <= $variant->reorder_level ? 'text-red-600' : 'text-emerald-600' }}">{{ $variant->stock_level }}</span></div>
-                    <div class="text-slate-500 font-bold uppercase">Expiry: <span class="text-slate-800">{{ $variant->expiry_date ? \Carbon\Carbon::parse($variant->expiry_date)->format('d M, y') : 'N/A' }}</span></div>
-                    <div class="text-[#f59e0b] text-right italic font-black text-sm">PKR {{ number_format($variant->sale_price, 0) }}</div>
+                    <div class="text-slate-500 font-bold uppercase">Batch: <span class="text-slate-800"><?php echo e($variant->batch_no ?? '---'); ?></span></div>
+                    <div class="text-slate-500 text-right font-bold uppercase">Stock: <span class="font-black <?php echo e($variant->stock_level <= $variant->reorder_level ? 'text-red-600' : 'text-emerald-600'); ?>"><?php echo e($variant->stock_level); ?></span></div>
+                    <div class="text-slate-500 font-bold uppercase">Expiry: <span class="text-slate-800"><?php echo e($variant->expiry_date ? \Carbon\Carbon::parse($variant->expiry_date)->format('d M, y') : 'N/A'); ?></span></div>
+                    <div class="text-[#f59e0b] text-right italic font-black text-sm">PKR <?php echo e(number_format($variant->sale_price, 0)); ?></div>
                 </div>
             </div>
-            @empty
+            <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); if ($__empty_1): ?>
             <div class="py-10 text-center text-slate-400 italic font-black uppercase tracking-widest text-xs">No product matches found.</div>
-            @endforelse
+            <?php endif; ?>
         </div>
 
-        <div class="mt-8 flex justify-center">{{ $variants->appends(request()->input())->links() }}</div>
+        <div class="mt-8 flex justify-center"><?php echo e($variants->appends(request()->input())->links()); ?></div>
     </div>
 </main>
 
-{{-- MODAL: Product Entry --}}
+
 <div id="productModal" class="fixed inset-0 bg-[#0f172a]/80 hidden flex justify-center items-center z-[100] p-2 sm:p-4 backdrop-blur-sm">
     <div id="productModalBox" class="bg-white w-full max-w-5xl rounded-3xl shadow-3xl flex flex-col overflow-hidden transform transition-all duration-300 scale-95 opacity-0 h-full max-h-[90vh]">
         <div class="p-5 border-b bg-[#0f172a] flex justify-between items-center">
@@ -123,19 +125,19 @@
         </div>
         
         <div class="flex-1 overflow-y-auto p-4 md:p-8 space-y-8 bg-[#f8fafc]">
-            {{-- Form Inputs --}}
+            
             <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
                 <div class="relative">
                     <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest block mb-2">Product Name *</label>
                     <input id="p_name" oninput="filterMedicines(this.value)" autocomplete="off" class="w-full px-4 py-3 bg-white border border-slate-200 rounded-2xl outline-none focus:ring-4 focus:ring-amber-500/10 focus:border-[#f59e0b] font-bold text-sm shadow-sm" placeholder="e.g. Rice 1kg, Shampoo..." />
                     <div id="medicine_dropdown" class="absolute left-0 right-0 mt-2 bg-white rounded-2xl shadow-2xl border border-slate-100 hidden z-[110] max-h-48 overflow-y-auto overflow-hidden">
-                        @foreach($allMedicines as $med)
+                        <?php $__currentLoopData = $allMedicines; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $med): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                             <div class="dropdown-item p-3 hover:bg-slate-50 cursor-pointer border-b border-slate-50 last:border-0 flex flex-col transition" 
-                                 data-name="{{ $med->name }}" data-manufacturer="{{ $med->manufacturer }}" data-variants="{{ json_encode($med->variants) }}" onclick="selectMedicine(this)">
-                                <span class="font-black text-slate-800 text-xs">{{ $med->name }}</span>
-                                <span class="text-[9px] text-slate-400 uppercase font-black">{{ $med->manufacturer }}</span>
+                                 data-name="<?php echo e($med->name); ?>" data-manufacturer="<?php echo e($med->manufacturer); ?>" data-variants="<?php echo e(json_encode($med->variants)); ?>" onclick="selectMedicine(this)">
+                                <span class="font-black text-slate-800 text-xs"><?php echo e($med->name); ?></span>
+                                <span class="text-[9px] text-slate-400 uppercase font-black"><?php echo e($med->manufacturer); ?></span>
                             </div>
-                        @endforeach
+                        <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                     </div>
                 </div>
                 <div>
@@ -148,7 +150,7 @@
                 </div>
             </div>
 
-            {{-- Variants Table --}}
+            
             <div class="bg-white rounded-3xl p-6 border border-slate-100 shadow-sm">
                 <div class="flex items-center justify-between mb-6">
                     <h4 class="font-black text-slate-900 uppercase text-[10px] tracking-widest border-l-4 border-[#f59e0b] pl-3">Stock Variants & SKUs</h4>
@@ -179,7 +181,7 @@
     </div>
 </div>
 
-{{-- MODAL: Edit Variant --}}
+
 <div id="editModal" class="fixed inset-0 bg-[#0f172a]/80 hidden flex justify-center items-center z-[100] p-2 sm:p-4 backdrop-blur-sm">
     <div id="editModalBox" class="bg-white w-full max-w-lg rounded-3xl shadow-2xl overflow-hidden transform transition-all duration-200 scale-95 opacity-0">
         <div class="p-5 border-b bg-[#0f172a] font-black uppercase italic text-[#f59e0b] text-lg">Update Variant</div>
@@ -226,7 +228,7 @@
     </div>
 </div>
 
-@push('scripts')
+<?php $__env->startPush('scripts'); ?>
 <script>
     let currentVariants = [];
 
@@ -290,7 +292,7 @@
     document.getElementById('editForm').addEventListener('submit', async (e) => {
         e.preventDefault();
         const payload = {
-            _token: "{{ csrf_token() }}",
+            _token: "<?php echo e(csrf_token()); ?>",
             name: document.getElementById('edit_name').value,
             sku: document.getElementById('edit_sku').value,
             batch_no: document.getElementById('edit_batch').value,
@@ -305,17 +307,18 @@
 
     document.getElementById('saveProductBtn').addEventListener('click', async () => {
         if(!document.getElementById('p_name').value) { alert('Please enter product name'); return; }
-        const payload = { _token: "{{ csrf_token() }}", name: document.getElementById('p_name').value, generic_name: document.getElementById('p_generic').value, manufacturer: document.getElementById('p_man').value, variants: currentVariants };
-        const res = await fetch("{{ route('medicines.store') }}", { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
+        const payload = { _token: "<?php echo e(csrf_token()); ?>", name: document.getElementById('p_name').value, generic_name: document.getElementById('p_generic').value, manufacturer: document.getElementById('p_man').value, variants: currentVariants };
+        const res = await fetch("<?php echo e(route('medicines.store')); ?>", { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
         if((await res.json()).success) window.location.reload();
     });
 
     window.deleteProduct = async (id) => {
         if(confirm('Delete SKU permanently?')) {
-            const res = await fetch(`/medicines/${id}`, { method: 'DELETE', headers: { 'X-CSRF-TOKEN': "{{ csrf_token() }}", 'Accept': 'application/json' } });
+            const res = await fetch(`/medicines/${id}`, { method: 'DELETE', headers: { 'X-CSRF-TOKEN': "<?php echo e(csrf_token()); ?>", 'Accept': 'application/json' } });
             if((await res.json()).success) window.location.reload();
         }
     };
 </script>
-@endpush
-@endsection
+<?php $__env->stopPush(); ?>
+<?php $__env->stopSection(); ?>
+<?php echo $__env->make('layouts.main', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?><?php /**PATH E:\code_2\general-store\resources\views/pages/inventory.blade.php ENDPATH**/ ?>

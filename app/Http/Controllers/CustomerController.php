@@ -7,31 +7,24 @@ use DB;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
 use Log;
-// Use Log facade for error logging
 
 class CustomerController extends Controller
 {
-    /**
-     * Display a listing of the resource (Initial view load).
-     */
+ 
     public function index()
     {
         $customers = null;
         try {
-            // Fetch initial paged data for Blade rendering
             $customers = Customer::orderBy('customer_name')->paginate(10);
         } catch (QueryException $e) {
             Log::error('Database error loading customers on index page: ' . $e->getMessage());
-            // $customers remains null, triggering the error message in Blade.
         }
 
-        // Ensure your view file is named 'pages.customer' or adjust the return
         return view('pages.customers', compact('customers'));
     }
 public function getHistory(Customer $customer)
 {
     try {
-        // 1. POS Sales fetch karein
         $sales = Sale::where('customer_id', $customer->id)
             ->select('invoice_number as reference', 'total_amount as amount', 'payment_method as type', 'sale_date as date')
             ->get()
@@ -40,7 +33,6 @@ public function getHistory(Customer $customer)
                 return $item;
             });
 
-        // 2. Manual Payments/Logs fetch karein
         $payments = DB::table('customer_manual_logs') 
             ->where('customer_id', $customer->id)
             ->select('reference_no as reference', 'amount', 'type', 'created_at as date')
@@ -50,7 +42,6 @@ public function getHistory(Customer $customer)
                 return $item;
             });
 
-        // 3. Dono ko merge aur date ke mutabiq sort karein
         $combinedHistory = $sales->concat($payments)->sortByDesc('date')->values();
         
         return response()->json([
@@ -62,9 +53,7 @@ public function getHistory(Customer $customer)
         return response()->json(['success' => false, 'message' => 'Ledger failed to load.'], 500);
     }
 }
-    /**
-     * Record manual ledger entry (from the 'Update Ledger' button)
-     */
+
     public function recordPayment(Request $request, Customer $customer)
     {
         $request->validate([
@@ -75,14 +64,12 @@ public function getHistory(Customer $customer)
         try {
             DB::beginTransaction();
 
-            // 1. Update customer balance
             if ($request->type === 'debit') {
                 $customer->decrement('credit_balance', $request->amount);
             } else {
                 $customer->increment('credit_balance', $request->amount);
             }
 
-            // 2. Log entry for history (ensure table 'customer_manual_logs' exists)
             DB::table('customer_manual_logs')->insert([
                 'customer_id' => $customer->id,
                 'reference_no' => 'PAY-' . strtoupper(uniqid()),
@@ -98,9 +85,7 @@ public function getHistory(Customer $customer)
             return response()->json(['success' => false, 'message' => 'Database Error.'], 500);
         }
     }
-    /**
-     * Dynamic fetching of customers for AJAX/filtering/search.
-     */
+
     public function getCustomers(Request $request)
     {
         $query = Customer::orderBy('customer_name');
@@ -114,17 +99,14 @@ public function getHistory(Customer $customer)
 
         if ($credit_filter = $request->get('credit_filter')) {
             if ($credit_filter === 'due') {
-                // Assuming positive balance means customer owes money (Credit Balance > 0)
                 $query->where('credit_balance', '>', 0);
             } elseif ($credit_filter === 'paid') {
-                // Assuming zero balance means cleared debt
                 $query->where('credit_balance', '=', 0);
             }
         }
 
         $customers = $query->paginate(10);
 
-        // Returns JSON data for JS to render
         return response()->json([
             'data'  => $customers->items(),
             'links' => [
@@ -139,9 +121,7 @@ public function getHistory(Customer $customer)
         ]);
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
+
     public function store(Request $request)
     {
         $validatedData = $request->validate([
@@ -163,17 +143,13 @@ public function getHistory(Customer $customer)
         ], 201);
     }
 
-    /**
-     * Show the specified resource for editing (AJAX endpoint).
-     */
+    
     public function edit(Customer $customer)
     {
         return response()->json($customer);
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
+  
     public function update(Request $request, Customer $customer)
     {
         $validatedData = $request->validate([
@@ -194,9 +170,7 @@ public function getHistory(Customer $customer)
         ]);
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
+ 
     public function destroy(Customer $customer)
     {
         $customerName = $customer->customer_name;

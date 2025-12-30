@@ -62,7 +62,7 @@
 
 <div x-data="{ sidebarOpen: false }" class="relative flex">
 
-    {{-- Mobile Toggle --}}
+    
     <div class="fixed top-5 left-5 z-40 md:hidden">
         <button @click="sidebarOpen = true"
             class="p-3 bg-[#0f172a] text-white rounded-xl shadow-2xl border border-slate-700">
@@ -70,23 +70,23 @@
         </button>
     </div>
 
-    {{-- Mobile Overlay --}}
+    
     <div x-show="sidebarOpen" x-cloak @click="sidebarOpen = false" x-transition.opacity
         class="fixed inset-0 bg-slate-900/80 z-40 md:hidden backdrop-blur-sm">
     </div>
 
-    <aside id="sidebar" x-data="{ openReports: {{ request()->routeIs('reports*') ? 'true' : 'false' }} }"
+    <aside id="sidebar" x-data="{ openReports: <?php echo e(request()->routeIs('reports*') ? 'true' : 'false'); ?> }"
         :class="sidebarOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0'"
         class="fixed inset-y-0 left-0 w-72 bg-[#0f172a] py-8 px-4 overflow-y-auto transition-transform duration-500 ease-[cubic-bezier(0.4,0,0.2,1)] z-50 text-slate-300 font-sans md:sticky md:top-0 border-r border-slate-800 shadow-2xl">
 
-        {{-- Mobile Close Button --}}
+        
         <div class="md:hidden absolute top-6 right-6">
             <button @click="sidebarOpen = false" class="text-slate-400 hover:text-white">
                 <i class="fas fa-times-circle text-2xl"></i>
             </button>
         </div>
 
-        {{-- Logo/User Section --}}
+        
         <div class="mx-2 mb-10 mt-2 group">
             <div
                 class="relative p-4 rounded-[1.5rem] bg-white/5 border border-white/10 backdrop-blur-md transition-all duration-500 hover:bg-white/10 hover:border-amber-500/30 overflow-hidden shadow-2xl">
@@ -100,13 +100,13 @@
                         <div
                             class="absolute inset-0 bg-amber-500 rounded-full blur-md opacity-20 group-hover:opacity-40 animate-pulse">
                         </div>
-                        @if(isset($siteSettings) && $siteSettings->logo)
-                            <img src="{{ asset('storage/' . $siteSettings->logo) }}"
+                        <?php if(isset($siteSettings) && $siteSettings->logo): ?>
+                            <img src="<?php echo e(asset('storage/' . $siteSettings->logo)); ?>"
                                 class="w-12 h-12 rounded-full border-2 border-amber-500/50 object-cover shadow-lg relative z-10 transition-transform duration-500 group-hover:scale-105">
-                        @else
-                            <img src="{{ asset('assets/images/images (3).jpg') }}"
+                        <?php else: ?>
+                            <img src="<?php echo e(asset('assets/images/images (3).jpg')); ?>"
                                 class="w-12 h-12 rounded-full border-2 border-slate-600 object-cover shadow-lg relative z-10 transition-transform duration-500 group-hover:scale-105">
-                        @endif
+                        <?php endif; ?>
                         <span
                             class="absolute bottom-0 right-0 w-3 h-3 bg-emerald-500 border-2 border-[#0f172a] rounded-full z-20"></span>
                     </div>
@@ -114,12 +114,14 @@
                     <div class="overflow-hidden">
                         <h4
                             class="font-black text-white text-sm leading-tight truncate tracking-tight uppercase italic italic group-hover:text-amber-400 transition-colors">
-                            {{ $siteSettings->user_name ?? 'Administrator' }}
+                            <?php echo e($siteSettings->user_name ?? 'Administrator'); ?>
+
                         </h4>
                         <div class="flex items-center gap-1.5 mt-1">
                             <i class="fa-solid fa-store text-[10px] text-amber-500 opacity-80"></i>
                             <p class="text-[9px] text-slate-400 font-bold uppercase tracking-widest truncate">
-                                {{ $siteSettings->pharmacy_name ?? 'RetailPro Store' }}
+                                <?php echo e($siteSettings->pharmacy_name ?? 'RetailPro Store'); ?>
+
                             </p>
                         </div>
                     </div>
@@ -134,56 +136,56 @@
         </div>
 
         <nav class="space-y-2">
-            @php
+            <?php
                 $navClass = 'nav-link-base group flex items-center gap-4 px-4 py-3.5 text-sm font-bold uppercase tracking-wider';
                 $active = 'active-tab-retail';
-            @endphp
+            ?>
 
-            {{-- 1. Analytics --}}
-            <a href="{{ route('dashboard') }}"
-                class="{{ $navClass }} {{ request()->routeIs('dashboard') ? $active : '' }}">
+            
+            <a href="<?php echo e(route('dashboard')); ?>"
+                class="<?php echo e($navClass); ?> <?php echo e(request()->routeIs('dashboard') ? $active : ''); ?>">
                 <i class="fas fa-chart-pie text-lg w-6 text-center"></i>
                 <span class="text-[11px]">Store Overview</span>
             </a>
 
-            {{-- 2. POS --}}
-            <a href="{{ route('pos') }}" class="{{ $navClass }} {{ request()->routeIs('pos') ? $active : '' }}">
+            
+            <a href="<?php echo e(route('pos')); ?>" class="<?php echo e($navClass); ?> <?php echo e(request()->routeIs('pos') ? $active : ''); ?>">
                 <i class="fas fa-shopping-cart text-lg w-6 text-center"></i>
                 <span class="text-[11px]">Checkout Point</span>
             </a>
 
-            {{-- 3. Inventory --}}
-            <a href="{{ route('medicines.index') }}"
-                class="{{ $navClass }} {{ request()->routeIs('medicines.index') ? $active : '' }}">
+            
+            <a href="<?php echo e(route('medicines.index')); ?>"
+                class="<?php echo e($navClass); ?> <?php echo e(request()->routeIs('medicines.index') ? $active : ''); ?>">
                 <i class="fas fa-boxes-stacked text-lg w-6 text-center"></i>
                 <span class="text-[11px]">Product Catalog</span>
             </a>
 
-            {{-- 4. Purchases --}}
-            <a href="{{ route('po.index') }}"
-                class="{{ $navClass }} {{ request()->routeIs('po.index') ? $active : '' }}">
+            
+            <a href="<?php echo e(route('po.index')); ?>"
+                class="<?php echo e($navClass); ?> <?php echo e(request()->routeIs('po.index') ? $active : ''); ?>">
                 <i class="fas fa-file-invoice-dollar text-lg w-6 text-center"></i>
                 <span class="text-[11px]">Purchase Orders</span>
             </a>
 
-            {{-- 5. Suppliers (The "Missing" Tab) --}}
-            <a href="{{ route('suppliers.index') }}"
-                class="{{ $navClass }} {{ request()->routeIs('suppliers*') ? $active : '' }}">
+            
+            <a href="<?php echo e(route('suppliers.index')); ?>"
+                class="<?php echo e($navClass); ?> <?php echo e(request()->routeIs('suppliers*') ? $active : ''); ?>">
                 <i class="fas fa-truck-loading text-lg w-6 text-center"></i>
                 <span class="text-[11px]">Suppliers Network</span>
             </a>
 
-            {{-- 6. Customers --}}
-            <a href="{{ route('customers.index') }}"
-                class="{{ $navClass }} {{ request()->routeIs('customers.index') ? $active : '' }}">
+            
+            <a href="<?php echo e(route('customers.index')); ?>"
+                class="<?php echo e($navClass); ?> <?php echo e(request()->routeIs('customers.index') ? $active : ''); ?>">
                 <i class="fas fa-address-book text-lg w-6 text-center"></i>
                 <span class="text-[11px]">Customer </span>
             </a>
 
-            {{-- 7. Reports Submenu --}}
-            <div class="relative" x-data="{ open: {{ request()->routeIs('reports*') ? 'true' : 'false' }} }">
+            
+            <div class="relative" x-data="{ open: <?php echo e(request()->routeIs('reports*') ? 'true' : 'false'); ?> }">
                 <button @click="open = !open"
-                    class="w-full {{ $navClass }} {{ request()->routeIs('reports*') ? 'bg-slate-800/40' : '' }}">
+                    class="w-full <?php echo e($navClass); ?> <?php echo e(request()->routeIs('reports*') ? 'bg-slate-800/40' : ''); ?>">
                     <i class="fas fa-file-contract text-lg w-6 text-center"></i>
                     <span class="text-[11px] flex-1 text-left">Reports</span>
                     <i class="fas fa-chevron-right text-[10px] transition-transform duration-300"
@@ -191,16 +193,16 @@
                 </button>
 
                 <div x-show="open" x-cloak x-transition class="submenu-glass overflow-hidden">
-                    <a href="{{ route('reports.sales', ['tab' => 'sales']) }}"
-                        class="flex items-center gap-3 px-6 py-3 text-[10px] font-black uppercase tracking-widest hover:bg-amber-500/5 {{ request('tab') == 'sales' ? 'active-submenu-retail' : 'text-slate-400' }}">
+                    <a href="<?php echo e(route('reports.sales', ['tab' => 'sales'])); ?>"
+                        class="flex items-center gap-3 px-6 py-3 text-[10px] font-black uppercase tracking-widest hover:bg-amber-500/5 <?php echo e(request('tab') == 'sales' ? 'active-submenu-retail' : 'text-slate-400'); ?>">
                         <i class="fas fa-circle text-[4px]"></i> Sales Performance
                     </a>
-                    <a href="{{ route('reports.medicine') }}"
-                        class="flex items-center gap-3 px-6 py-3 text-[10px] font-black uppercase tracking-widest hover:bg-amber-500/5 {{ request()->routeIs('reports.medicine') ? 'active-submenu-retail' : 'text-slate-400' }}">
+                    <a href="<?php echo e(route('reports.medicine')); ?>"
+                        class="flex items-center gap-3 px-6 py-3 text-[10px] font-black uppercase tracking-widest hover:bg-amber-500/5 <?php echo e(request()->routeIs('reports.medicine') ? 'active-submenu-retail' : 'text-slate-400'); ?>">
                         <i class="fas fa-circle text-[4px]"></i> Stock Valuation
                     </a>
-                    <a href="{{ route('reports.profit_loss') }}"
-                        class="flex items-center gap-3 px-6 py-3 text-[10px] font-black uppercase tracking-widest hover:bg-amber-500/5 {{ request()->routeIs('reports.profit_loss') ? 'active-submenu-retail' : 'text-slate-400' }}">
+                    <a href="<?php echo e(route('reports.profit_loss')); ?>"
+                        class="flex items-center gap-3 px-6 py-3 text-[10px] font-black uppercase tracking-widest hover:bg-amber-500/5 <?php echo e(request()->routeIs('reports.profit_loss') ? 'active-submenu-retail' : 'text-slate-400'); ?>">
                         <i class="fas fa-circle text-[4px]"></i> Profit & Loss
                     </a>
                 </div>
@@ -208,17 +210,17 @@
 
             <hr class="my-6 border-slate-800 mx-4">
 
-            {{-- 8. Settings --}}
-            <a href="{{ route('settings') }}"
-                class="{{ $navClass }} {{ request()->routeIs('settings') ? $active : '' }}">
+            
+            <a href="<?php echo e(route('settings')); ?>"
+                class="<?php echo e($navClass); ?> <?php echo e(request()->routeIs('settings') ? $active : ''); ?>">
                 <i class="fas fa-sliders-h text-lg w-6 text-center"></i>
                 <span class="text-[11px]">Store Settings</span>
             </a>
 
-            {{-- 9. Logout --}}
-            <form method="POST" action="{{ route('logout') }}" class="mt-4">
-                @csrf
-                <button type="submit" class="w-full {{ $navClass }} hover:text-red-400 transition-colors">
+            
+            <form method="POST" action="<?php echo e(route('logout')); ?>" class="mt-4">
+                <?php echo csrf_field(); ?>
+                <button type="submit" class="w-full <?php echo e($navClass); ?> hover:text-red-400 transition-colors">
                     <i class="fas fa-door-open text-lg w-6 text-center"></i>
                     <span class="text-[11px]">Logout System</span>
                 </button>
@@ -226,4 +228,4 @@
         </nav>
 
     </aside>
-</div>
+</div><?php /**PATH E:\code_2\general-store\resources\views/includes/sidebar.blade.php ENDPATH**/ ?>
